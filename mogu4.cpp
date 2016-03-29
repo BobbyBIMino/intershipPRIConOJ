@@ -35,7 +35,6 @@ int main()
 		{
 			cout<<i+1<<endl;
 			flag=true;
-			break;
 		}
 
 
