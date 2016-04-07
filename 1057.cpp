@@ -20,6 +20,9 @@ Output the depth-first traversal result of the call graph with the total time of
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <iomanip>
+#include <cstdlib>
 #include <stack>
 
 using namespace std;
@@ -29,20 +32,88 @@ int main()
 	int n;
 	cin>>n;
 
-	string [] funcN=new string[n];
-	string [] times=new string[n];
-	string [] action=new string[n];
+	bool flag=true;
+	vector<int> times;
+	vector<string> funcN;
+	vector<string> action;
+	stack<int> state;
+	
 	for (int i=0;i<n;i++)
-	cin>>funcN[i]>>times[i]>>action[i];
-    for (int i=0;i<n;i++)
+	{
+		string str;
+		string sun;
+		string act;
+		cin>>sun>>str>>act;
+		int ti;
+		ti=60*60*atoi(str.substr(0,2).c_str())+60*atoi(str.substr(3,2).c_str())+atoi(str.substr(6,2).c_str());
+		times.push_back(ti);
+		funcN.push_back(sun);
+		action.push_back(act);
+	}
+    
+    for (int i=1;i<times.size();i++)
     {
-    	int hh,mm,ss;
-    	
+    	if (times[i]<times[i-1])
+    	{
+    		flag=false;
+    		break;
+    	}
+    }
+    string rootFun=funcN[0];
+    if (flag)
+    {
+    	for (int i=0;i<n;i++)
+    	{
+    		if (action[i]=="START")
+    		{
+    			state.push(i);
+
+    		}
+    		else if (action[i]=="END")
+    		{
+    			
+    			if (funcN[state.top()]!=funcN[i])
+    			{
+    				flag=false;
+    				break;
+    			}
+    			else 
+    			{
+    				times[state.top()]=times[i]-times[state.top()];
+    				if (times[state.top()]==0)
+    				{
+    					flag=false;
+    					break;
+    				}
+    				state.pop();
+    			}
+    		}
+    		if ((state.size()==0)&&(i != n-1))
+    		{
+    			flag=false;
+    			break;
+    		}
+
+
+    	}
     }
 
 
-	delete[]funcN;
-	delete[]times;
-	delete[]action;
+    if (flag&&(state.size()==0))
+    {
+    	for (int i=0;i<n;i++)
+    	{
+    		if (action[i]=="START")
+    		{
+    			cout<<funcN[i]<<" "<<setw(2)<<setfill('0')<<times[i]/3600<<":"<<setw(2)<<setfill('0')<<(times[i]-3600*(times[i]/3600))/60<<":"<<setw(2)<<setfill('0')<<times[i]%60<<endl;
+    		}
+    	}
+    	
+
+    	
+    }
+    else cout<<"Incorrect performance log";
+   cin>>n;
+return 0;
 
 }

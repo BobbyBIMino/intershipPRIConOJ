@@ -65,6 +65,5 @@ int main()
 
 		
 	}
-cin>>nn;
 return 0;
 }
